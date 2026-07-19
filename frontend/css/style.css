@@ -672,6 +672,29 @@ input, select {
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     cursor: pointer;
+    position: relative;
+}
+
+.movie-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(212, 168, 67, 0.12),
+        transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.movie-card:hover::before {
+    opacity: 1;
 }
 
 .movie-card:hover {
@@ -767,6 +790,30 @@ input, select {
     border-radius: var(--radius);
     padding: 1.25rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.rec-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(212, 168, 67, 0.12),
+        transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.rec-card:hover::before {
+    opacity: 1;
 }
 
 .rec-card:hover {
@@ -1198,6 +1245,17 @@ input, select {
         width: 16px;
         margin: 0 0.2rem;
     }
+
+    #particles-bg {
+        opacity: 0.3 !important;
+    }
+    .glitch-text::before,
+    .glitch-text::after {
+        display: none;
+    }
+    .gradient-text {
+        background-size: 200% auto;
+    }
 }
 
 /* --- Loading Spinner --- */
@@ -1223,4 +1281,212 @@ input, select {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* --- Click Spark --- */
+.spark {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+}
+
+.spark-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: spark-fly 0.6s ease-out forwards;
+}
+
+@keyframes spark-fly {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(0);
+    }
+}
+
+/* --- Scroll Reveal --- */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- 无障碍：减少动画 --- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    #film-grain,
+    #particles-bg {
+        display: none !important;
+    }
+    .scroll-reveal {
+        opacity: 1;
+        transform: none;
+    }
+    .glitch-text::before,
+    .glitch-text::after {
+        display: none;
+    }
+}
+
+/* ============================================================
+   P0 Visual Effects — Glitch / Gradient / Shimmer / Film Grain
+   ============================================================ */
+
+/* --- 1. Glitch Text Effect --- */
+.glitch-text {
+    position: relative;
+    display: inline-block;
+}
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.glitch-text::before {
+    color: #ff00ff;
+    z-index: -1;
+    animation: glitch-1 3s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+    color: #00ffff;
+    z-index: -2;
+    animation: glitch-2 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-1 {
+    0% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, -1px); }
+    10% { clip-path: inset(92% 0 1% 0); transform: translate(1px, 2px); }
+    20% { clip-path: inset(43% 0 1% 0); transform: translate(-1px, 0); }
+    30% { clip-path: inset(25% 0 58% 0); transform: translate(0, 2px); }
+    40% { clip-path: inset(54% 0 7% 0); transform: translate(2px, -1px); }
+    50% { clip-path: inset(58% 0 43% 0); transform: translate(-2px, 1px); }
+    60% { clip-path: inset(70% 0 9% 0); transform: translate(1px, 0); }
+    70% { clip-path: inset(15% 0 65% 0); transform: translate(0, -2px); }
+    80% { clip-path: inset(80% 0 5% 0); transform: translate(-1px, 1px); }
+    90% { clip-path: inset(10% 0 80% 0); transform: translate(2px, 0); }
+    100% { clip-path: inset(50% 0 30% 0); transform: translate(0, 1px); }
+}
+
+@keyframes glitch-2 {
+    0% { clip-path: inset(65% 0 13% 0); transform: translate(2px, 0); }
+    10% { clip-path: inset(15% 0 70% 0); transform: translate(-1px, -2px); }
+    20% { clip-path: inset(80% 0 5% 0); transform: translate(0, 1px); }
+    30% { clip-path: inset(37% 0 42% 0); transform: translate(-2px, 0); }
+    40% { clip-path: inset(5% 0 85% 0); transform: translate(1px, -1px); }
+    50% { clip-path: inset(48% 0 32% 0); transform: translate(0, 2px); }
+    60% { clip-path: inset(92% 0 2% 0); transform: translate(-1px, 0); }
+    70% { clip-path: inset(20% 0 60% 0); transform: translate(2px, 1px); }
+    80% { clip-path: inset(55% 0 25% 0); transform: translate(0, -1px); }
+    90% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 2px); }
+    100% { clip-path: inset(72% 0 8% 0); transform: translate(1px, 0); }
+}
+
+/* Glitch hover 增强 */
+.glitch-text:hover::before,
+.glitch-text:hover::after {
+    animation-duration: 0.5s;
+}
+
+/* --- 3. Gradient Text (流动渐变扫光) --- */
+.gradient-text {
+    background: linear-gradient(
+        90deg,
+        var(--accent) 0%,
+        #fff 25%,
+        var(--accent) 50%,
+        #fff 75%,
+        var(--accent) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-flow 4s linear infinite;
+}
+
+@keyframes gradient-flow {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* --- 4. Shimmer Loading Effect (骨架屏闪光) --- */
+.shimmer {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+}
+
+.shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.04) 50%,
+        transparent 100%
+    );
+    animation: shimmer-slide 1.5s infinite;
+}
+
+@keyframes shimmer-slide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* --- 5. Film Grain 增强 (覆盖 animations.css 中的旧版) --- */
+#film-grain {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    animation: grain-shift 0.5s steps(1) infinite;
+}
+
+@keyframes grain-shift {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+    100% { transform: translate(0, 0); }
+}
+
+/* Light theme 下 film grain 透明度回退 */
+[data-theme="light"] #film-grain {
+    opacity: 0.03;
 }

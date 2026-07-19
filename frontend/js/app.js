@@ -38,7 +38,11 @@ const CineRec = (() => {
         for (const k of keys) {
             val = val?.[k];
         }
-        return val || key;
+        if (!val) {
+            console.warn(`[i18n] Missing key: ${key}`);
+            return key;
+        }
+        return val;
     }
 
     function applyI18n() {

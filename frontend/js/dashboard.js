@@ -5,6 +5,22 @@ let evalChartInstance = null;
 let ablationChartInstance = null;
 let dashboardResizeBound = false;
 
+function animateNumber(el, target, duration = 800) {
+    const start = 0;
+    const startTime = performance.now();
+
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // easeOutExpo
+        const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        const current = start + (target - start) * eased;
+        el.textContent = current.toFixed(4);
+        if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+}
+
 function handleDashboardResize() {
     if (evalChartInstance) evalChartInstance.resize();
     if (ablationChartInstance) ablationChartInstance.resize();
@@ -58,7 +74,7 @@ function renderEvalTable(results) {
 
     // CountUp for metric cells
     document.querySelectorAll('.metric-cell[data-count]').forEach(el => {
-        Animations.countUp(el, parseFloat(el.dataset.count));
+        animateNumber(el, parseFloat(el.dataset.count));
     });
 }
 

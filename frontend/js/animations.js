@@ -3,6 +3,7 @@
  */
 const Animations = (() => {
     let lenis = null;
+    let rafId = null;
 
     function initLenis() {
         if (typeof Lenis === 'undefined') return;
@@ -13,9 +14,18 @@ const Animations = (() => {
         });
         function raf(time) {
             lenis.raf(time);
-            requestAnimationFrame(raf);
+            rafId = requestAnimationFrame(raf);
         }
-        requestAnimationFrame(raf);
+        rafId = requestAnimationFrame(raf);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            } else {
+                rafId = requestAnimationFrame(raf);
+            }
+        });
     }
 
     function initLoginAnimations() {
@@ -96,12 +106,73 @@ const Animations = (() => {
         });
     }
 
+    function initScrollReveal() {
+        // 为页面标题添加 scroll-reveal
+        document.querySelectorAll('.page-title, .algo-chip, .section-title').forEach(el => {
+            el.classList.add('scroll-reveal');
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+    }
+
+    function initDecryptedText() {
+        document.querySelectorAll('[data-decrypt]').forEach(el => {
+            const original = el.textContent;
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?';
+            const len = original.length;
+            let revealed = 0;
+
+            function scramble() {
+                let display = '';
+                for (let i = 0; i < len; i++) {
+                    if (original[i] === ' ' || i < revealed) {
+                        display += original[i];
+                    } else {
+                        display += chars[Math.floor(Math.random() * chars.length)];
+                    }
+                }
+                el.textContent = display;
+
+                if (revealed < len) {
+                    revealed += Math.floor(Math.random() * 2) + 1;
+                    revealed = Math.min(revealed, len);
+                    setTimeout(scramble, 40 + Math.random() * 30);
+                } else {
+                    el.textContent = original;
+                }
+            }
+
+            // 使用 Intersection Observer 触发
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        revealed = 0;
+                        scramble();
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.3 });
+            observer.observe(el);
+        });
+    }
+
     function init() {
         initLenis();
         initLoginAnimations();
+        initScrollReveal();
+        initDecryptedText();
     }
 
-    return { init, animateMovieCards, animateRecCards, countUp };
+    return { init, animateMovieCards, animateRecCards, countUp, initScrollReveal };
 })();
 
 document.addEventListener('DOMContentLoaded', () => Animations.init());

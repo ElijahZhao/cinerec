@@ -36,13 +36,32 @@ const Effects = (() => {
 
         // Spotlight cards
         document.addEventListener('mousemove', (e) => {
-            const card = e.target.closest('.spotlight-card');
+            const card = e.target.closest('.movie-card, .rec-card');
             if (!card) return;
             const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            card.style.setProperty('--spotlight-x', `${x}px`);
-            card.style.setProperty('--spotlight-y', `${y}px`);
+            card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+            card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+        });
+
+        // Click Spark
+        document.addEventListener('click', (e) => {
+            const spark = document.createElement('div');
+            spark.className = 'spark';
+            spark.style.left = e.clientX + 'px';
+            spark.style.top = e.clientY + 'px';
+
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'spark-particle';
+                const angle = (Math.PI * 2 * i) / 8 + (Math.random() - 0.5) * 0.5;
+                const distance = 20 + Math.random() * 30;
+                particle.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+                spark.appendChild(particle);
+            }
+
+            document.body.appendChild(spark);
+            setTimeout(() => spark.remove(), 700);
         });
 
         _delegatedInitialized = true;
