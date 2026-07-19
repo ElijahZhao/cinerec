@@ -5,6 +5,22 @@ from db.database import get_connection
 router = APIRouter()
 
 
+def _row_to_dict(row):
+    """Convert sqlite3.Row to JSON-safe dict."""
+    d = {}
+    for key in row.keys():
+        val = row[key]
+        if isinstance(val, (np.integer,)):
+            d[key] = int(val)
+        elif isinstance(val, (np.floating,)):
+            d[key] = float(val)
+        else:
+            d[key] = val
+    return d
+
+import numpy as np
+
+
 @router.get("")
 async def list_movies(
     page: int = Query(1, ge=1),
@@ -40,11 +56,11 @@ async def list_movies(
     conn.close()
 
     return {
-        "movies": [dict(m) for m in movies],
-        "total": total,
-        "page": page,
-        "per_page": per_page,
-        "pages": (total + per_page - 1) // per_page
+        "movies": [_row_to_dict(m) for m in movies],
+        "total": int(total),
+        "page": int(page),
+        "per_page": int(per_page),
+        "pages": int((total + per_page - 1) // per_page)
     }
 
 
@@ -78,9 +94,9 @@ async def get_movie(movie_id: int):
     ).fetchone()
     conn.close()
 
-    result = dict(movie)
-    result["avg_rating"] = round(rating_row["avg_rating"], 2) if rating_row["avg_rating"] else None
-    result["rating_count"] = rating_row["count"]
+    result = _row_to_dict(movie)
+    result["avg_rating"] = round(float(rating_row["avg_rating"]), 2) if rating_row["avg_rating"] else None
+    result["rating_count"] = int(rating_row["count"])
     return result
 
 

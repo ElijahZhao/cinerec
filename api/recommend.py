@@ -1,7 +1,8 @@
 """Recommendation endpoints with real model inference."""
-import os, sys, pickle
+import os, sys, pickle, json
 import numpy as np
 from fastapi import APIRouter, Query, HTTPException
+from fastapi.responses import JSONResponse
 from db.database import get_connection
 
 router = APIRouter()
@@ -114,13 +115,13 @@ async def get_recommendations(
             ).fetchone()
             if movie:
                 recommendations.append({
-                    "item_id": movie["id"],
-                    "title": movie["title"],
-                    "genres": movie["genres"],
-                    "poster_url": movie["poster_url"],
-                    "release_year": movie["release_year"],
+                    "item_id": int(movie["id"]),
+                    "title": str(movie["title"]),
+                    "genres": str(movie["genres"] or ""),
+                    "poster_url": str(movie["poster_url"] or ""),
+                    "release_year": int(movie["release_year"]) if movie["release_year"] else None,
                     "score": round(float(score), 4),
-                    "algorithm": algorithm
+                    "algorithm": str(algorithm)
                 })
     else:
         # Fallback: random unwatched movies
@@ -152,12 +153,19 @@ async def get_recommendations(
         for rec in recommendations:
             rec["reasons"] = [{"type": "default", "reason_en": "Based on your viewing history", "reason_zh": "基于你的观影历史", "score": 0}]
     
-    return {
+    def _json_default(o):
+        if isinstance(o, (np.floating,)):
+            return float(o)
+        if isinstance(o, (np.integer,)):
+            return int(o)
+        return str(o)
+
+    return JSONResponse(content=json.loads(json.dumps({
         "user_id": user_id,
         "algorithm": algorithm,
         "recommendations": recommendations,
         "total": len(recommendations)
-    }
+    }, default=_json_default)))
 
 
 @router.get("/{movie_id}/explain")
