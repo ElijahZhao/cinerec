@@ -51,6 +51,9 @@ class RecommenderExplainer:
             self.content_embs = None
             self.item_similarity = None
 
+        # Build movie_dict for O(1) lookup
+        self.movie_dict = {m['id']: m for m in self.movies}
+
     def load_user_ratings(self, train_data):
         """Load user rating history from training data."""
         for u, i, r in zip(train_data['user_id'], train_data['item_id'], train_data['rating']):
@@ -58,16 +61,14 @@ class RecommenderExplainer:
 
     def get_movie_title(self, item_id):
         """Get movie title by item ID."""
-        for m in self.movies:
-            if m["id"] == item_id:
-                return m.get("title", f"Movie {item_id}")
+        if hasattr(self, 'movie_dict') and item_id in self.movie_dict:
+            return self.movie_dict[item_id].get("title", f"Movie {item_id}")
         return f"Movie {item_id}"
 
     def get_movie_genres(self, item_id):
         """Get movie genres by item ID."""
-        for m in self.movies:
-            if m["id"] == item_id:
-                return m.get("genres", "")
+        if hasattr(self, 'movie_dict') and item_id in self.movie_dict:
+            return self.movie_dict[item_id].get("genres", "")
         return ""
 
     def content_reason(self, user_id, recommended_item_id, top_k=2):

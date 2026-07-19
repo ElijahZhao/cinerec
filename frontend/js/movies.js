@@ -101,11 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Submit rating
-    document.getElementById('btn-submit-rating').addEventListener('click', () => {
+    document.getElementById('btn-submit-rating').addEventListener('click', async () => {
         const activeStar = document.querySelector('.star-rating .star.active:last-of-type');
         if (!activeStar || !ratingMovieId) return;
         const rating = parseInt(activeStar.dataset.value);
-        // Demo: just close modal
+        try {
+            await CineRec.api(`/api/movies/${ratingMovieId}/rate?user_id=${CineRec.state.userId}&rating=${rating}`);
+        } catch(e) {}
         document.getElementById('rating-modal').classList.add('hidden');
     });
 

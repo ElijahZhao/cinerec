@@ -1,9 +1,15 @@
 """Authentication endpoints."""
+import hashlib
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from db.database import get_connection
 
 router = APIRouter()
+
+
+def _hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
 
 
 class LoginRequest(BaseModel):
@@ -20,11 +26,13 @@ class RegisterRequest(BaseModel):
 async def login(req: LoginRequest):
     conn = get_connection()
     user = conn.execute(
-        "SELECT id, username FROM users WHERE username = ?", (req.username,)
+        "SELECT id, username, password_hash FROM users WHERE username = ?", (req.username,)
     ).fetchone()
     conn.close()
     if not user:
         raise HTTPException(404, "User not found / 用户不存在")
+    if _hash_password(req.password) != user["password_hash"]:
+        raise HTTPException(401, "Invalid password / 密码错误")
     return {"user_id": user["id"], "username": user["username"], "message": "Login success / 登录成功"}
 
 
@@ -32,9 +40,10 @@ async def login(req: LoginRequest):
 async def register(req: RegisterRequest):
     conn = get_connection()
     try:
+        password_hash = _hash_password(req.password)
         conn.execute(
             "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-            (req.username, req.password)  # Demo: no real hashing
+            (req.username, password_hash)
         )
         conn.commit()
         user = conn.execute(

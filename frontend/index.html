@@ -8,8 +8,8 @@
     <title>CineRec — Multi-Modal Movie Recommendation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=5">
-    <link rel="stylesheet" href="css/animations.css?v=5">
+    <link rel="stylesheet" href="css/style.css?v=6">
+    <link rel="stylesheet" href="css/animations.css?v=6">
 </head>
 <body>
     <!-- Particle Background -->
@@ -28,6 +28,9 @@
             <a href="#" class="nav-link" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</a>
         </div>
         <div class="nav-actions">
+            <button id="hamburger" class="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
             <button id="theme-toggle" class="btn-glass" title="Toggle Theme">
                 <span id="theme-icon">&#9788;</span>
             </button>
@@ -81,15 +84,15 @@
                 </form>
             </div>
             <div class="algo-preview">
-                <div class="algo-step" data-delay="0"><span class="algo-dot"></span><span>UserCF</span></div>
+                <div class="algo-step" data-delay="0"><span class="algo-dot"></span><span data-i18n="rec.algoUserCF">UserCF</span></div>
                 <div class="algo-line"></div>
-                <div class="algo-step" data-delay="200"><span class="algo-dot"></span><span>ItemCF</span></div>
+                <div class="algo-step" data-delay="200"><span class="algo-dot"></span><span data-i18n="rec.algoItemCF">ItemCF</span></div>
                 <div class="algo-line"></div>
-                <div class="algo-step" data-delay="400"><span class="algo-dot"></span><span>SVD</span></div>
+                <div class="algo-step" data-delay="400"><span class="algo-dot"></span><span data-i18n="rec.algoSVD">SVD</span></div>
                 <div class="algo-line"></div>
-                <div class="algo-step" data-delay="600"><span class="algo-dot"></span><span>NeuMF</span></div>
+                <div class="algo-step" data-delay="600"><span class="algo-dot"></span><span data-i18n="rec.algoNeuMF">NeuMF</span></div>
                 <div class="algo-line"></div>
-                <div class="algo-step highlight" data-delay="800"><span class="algo-dot glow"></span><span>Multi-Modal</span></div>
+                <div class="algo-step highlight" data-delay="800"><span class="algo-dot glow"></span><span data-i18n="rec.algoMultiModal">Multi-Modal</span></div>
             </div>
         </div>
     </section>
@@ -124,11 +127,11 @@
             <div class="page-header">
                 <h1 class="page-title" data-i18n="rec.title">For You</h1>
                 <div class="algo-switcher">
-                    <button class="algo-chip" data-algo="UserCF">UserCF</button>
-                    <button class="algo-chip" data-algo="ItemCF">ItemCF</button>
-                    <button class="algo-chip active" data-algo="SVD">SVD</button>
-                    <button class="algo-chip" data-algo="NeuMF">NeuMF</button>
-                    <button class="algo-chip" data-algo="MultiModalNCF">Multi-Modal</button>
+                    <button class="algo-chip" data-algo="UserCF" data-i18n="rec.algoUserCF">UserCF</button>
+                    <button class="algo-chip" data-algo="ItemCF" data-i18n="rec.algoItemCF">ItemCF</button>
+                    <button class="algo-chip active" data-algo="SVD" data-i18n="rec.algoSVD">SVD</button>
+                    <button class="algo-chip" data-algo="NeuMF" data-i18n="rec.algoNeuMF">NeuMF</button>
+                    <button class="algo-chip" data-algo="MultiModalNCF" data-i18n="rec.algoMultiModal">Multi-Modal</button>
                 </div>
                 <button id="btn-refresh-rec" class="btn-outline magnetic-btn" data-i18n="rec.refresh">Refresh</button>
             </div>
@@ -185,13 +188,13 @@
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.7.0/tsparticles.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
-    <script src="js/app.js?v=5"></script>
-    <script src="js/animations.js?v=5"></script>
-    <script src="js/particles.js?v=5"></script>
-    <script src="js/effects.js?v=5"></script>
-    <script src="js/auth.js?v=5"></script>
-    <script src="js/movies.js?v=5"></script>
-    <script src="js/recommend.js?v=5"></script>
-    <script src="js/dashboard.js?v=5"></script>
+    <script src="js/app.js?v=6"></script>
+    <script src="js/animations.js?v=6"></script>
+    <script src="js/particles.js?v=6"></script>
+    <script src="js/effects.js?v=6"></script>
+    <script src="js/auth.js?v=6"></script>
+    <script src="js/movies.js?v=6"></script>
+    <script src="js/recommend.js?v=6"></script>
+    <script src="js/dashboard.js?v=6"></script>
 </body>
 </html>

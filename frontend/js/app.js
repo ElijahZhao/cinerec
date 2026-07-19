@@ -125,6 +125,13 @@ const CineRec = (() => {
 
     // Init
     async function init() {
+        // Check CDN dependencies
+        const deps = ['gsap', 'Lenis', 'tsParticles', 'echarts'];
+        const missing = deps.filter(d => typeof window[d] === 'undefined' && d !== 'Lenis');
+        if (missing.length > 0) {
+            console.warn('Missing CDN dependencies:', missing.join(', '));
+        }
+
         // Restore user session
         const savedUser = localStorage.getItem('cinerec-user');
         if (savedUser) {
@@ -175,6 +182,22 @@ const CineRec = (() => {
             });
         } catch (e) {
             console.warn('Could not load genres');
+        }
+
+        // Hamburger menu (mobile)
+        const hamburger = document.getElementById('hamburger');
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                document.querySelector('.nav-links').classList.toggle('open');
+            });
+            // Close menu when a nav link is clicked
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    document.querySelector('.nav-links').classList.remove('open');
+                });
+            });
         }
     }
 

@@ -18,6 +18,7 @@ def init_db(ratings_csv=None, movies_csv=None):
         user_id INTEGER, movie_id INTEGER, rating REAL,
         timestamp INTEGER, PRIMARY KEY (user_id, movie_id)
     )""")
+    c.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_ratings_user_movie ON ratings(user_id, movie_id)")
 
     if ratings_csv and os.path.exists(ratings_csv):
         print("Importing ratings data...")

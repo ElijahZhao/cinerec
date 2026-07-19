@@ -1,59 +1,63 @@
 /**
  * CineRec — Interaction Effects
- * Magnetic Button, 3D Tilt Cards, Spotlight Cards
+ * Magnetic Button, 3D Tilt Cards, Spotlight Cards (event delegation)
  */
 const Effects = (() => {
-    function initMagneticButtons() {
-        document.querySelectorAll('.magnetic-btn').forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'translate(0, 0)';
-            });
-        });
-    }
+    let _delegatedInitialized = false;
 
-    function initTiltCards() {
-        document.querySelectorAll('.tilt-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) / rect.width - 0.5;
-                const y = (e.clientY - rect.top) / rect.height - 0.5;
-                card.style.transform = `perspective(800px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) scale(1.02)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(800px) rotateY(0) rotateX(0) scale(1)';
-            });
+    function initDelegatedEffects() {
+        // Magnetic buttons
+        document.addEventListener('mousemove', (e) => {
+            const btn = e.target.closest('.magnetic-btn');
+            if (!btn) return;
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
         });
-    }
+        document.addEventListener('mouseleave', (e) => {
+            const btn = e.target.closest?.('.magnetic-btn');
+            if (btn) btn.style.transform = '';
+        }, true);
 
-    function initSpotlightCards() {
-        document.querySelectorAll('.spotlight-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--spotlight-x', `${x}px`);
-                card.style.setProperty('--spotlight-y', `${y}px`);
-            });
+        // Tilt cards
+        document.addEventListener('mousemove', (e) => {
+            const card = e.target.closest('.tilt-card');
+            if (!card) return;
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+            card.style.transform = `perspective(600px) rotateY(${(x - 0.5) * 10}deg) rotateX(${-(y - 0.5) * 10}deg)`;
         });
+        document.addEventListener('mouseleave', (e) => {
+            const card = e.target.closest?.('.tilt-card');
+            if (card) card.style.transform = '';
+        }, true);
+
+        // Spotlight cards
+        document.addEventListener('mousemove', (e) => {
+            const card = e.target.closest('.spotlight-card');
+            if (!card) return;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--spotlight-x', `${x}px`);
+            card.style.setProperty('--spotlight-y', `${y}px`);
+        });
+
+        _delegatedInitialized = true;
     }
 
     function init() {
-        initMagneticButtons();
-        initTiltCards();
-        initSpotlightCards();
+        initDelegatedEffects();
     }
 
     // Re-init for dynamically added elements
+    // With event delegation, this is a no-op after the first call
     function refresh() {
-        initMagneticButtons();
-        initTiltCards();
-        initSpotlightCards();
+        if (!_delegatedInitialized) {
+            initDelegatedEffects();
+        }
     }
 
     return { init, refresh };

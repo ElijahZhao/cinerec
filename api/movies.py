@@ -1,6 +1,6 @@
 """Movie browsing and rating endpoints."""
 from fastapi import APIRouter, Query, HTTPException
-from db.database import get_connection
+from db.database import get_connection, DBConnection
 
 router = APIRouter()
 
@@ -29,31 +29,30 @@ async def list_movies(
     genre: str = Query("", description="Filter by genre"),
     sort: str = Query("id", description="Sort field: id, title, year")
 ):
-    conn = get_connection()
-    offset = (page - 1) * per_page
+    with DBConnection() as conn:
+        offset = (page - 1) * per_page
 
-    query = "SELECT * FROM movies WHERE 1=1"
-    params = []
+        query = "SELECT * FROM movies WHERE 1=1"
+        params = []
 
-    if search:
-        query += " AND title LIKE ?"
-        params.append(f"%{search}%")
-    if genre:
-        query += " AND genres LIKE ?"
-        params.append(f"%{genre}%")
+        if search:
+            query += " AND title LIKE ?"
+            params.append(f"%{search}%")
+        if genre:
+            query += " AND genres LIKE ?"
+            params.append(f"%{genre}%")
 
-    # Count total
-    count_query = query.replace("SELECT *", "SELECT COUNT(*)")
-    total = conn.execute(count_query, params).fetchone()[0]
+        # Count total
+        count_query = query.replace("SELECT *", "SELECT COUNT(*)")
+        total = conn.execute(count_query, params).fetchone()[0]
 
-    # Sort and paginate
-    valid_sorts = {"id": "id", "title": "title", "year": "release_year"}
-    sort_col = valid_sorts.get(sort, "id")
-    query += f" ORDER BY {sort_col} LIMIT ? OFFSET ?"
-    params.extend([per_page, offset])
+        # Sort and paginate
+        valid_sorts = {"id": "id", "title": "title", "year": "release_year"}
+        sort_col = valid_sorts.get(sort, "id")
+        query += f" ORDER BY {sort_col} LIMIT ? OFFSET ?"
+        params.extend([per_page, offset])
 
-    movies = conn.execute(query, params).fetchall()
-    conn.close()
+        movies = conn.execute(query, params).fetchall()
 
     return {
         "movies": [_row_to_dict(m) for m in movies],
@@ -81,18 +80,16 @@ async def list_genres():
 
 @router.get("/{movie_id}")
 async def get_movie(movie_id: int):
-    conn = get_connection()
-    movie = conn.execute("SELECT * FROM movies WHERE id = ?", (movie_id,)).fetchone()
-    if not movie:
-        conn.close()
-        raise HTTPException(404, "Movie not found")
+    with DBConnection() as conn:
+        movie = conn.execute("SELECT * FROM movies WHERE id = ?", (movie_id,)).fetchone()
+        if not movie:
+            raise HTTPException(404, "Movie not found")
 
-    # Get average rating
-    rating_row = conn.execute(
-        "SELECT AVG(rating) as avg_rating, COUNT(*) as count FROM ratings WHERE movie_id = ?",
-        (movie_id,)
-    ).fetchone()
-    conn.close()
+        # Get average rating
+        rating_row = conn.execute(
+            "SELECT AVG(rating) as avg_rating, COUNT(*) as count FROM ratings WHERE movie_id = ?",
+            (movie_id,)
+        ).fetchone()
 
     result = _row_to_dict(movie)
     result["avg_rating"] = round(float(rating_row["avg_rating"]), 2) if rating_row["avg_rating"] else None
@@ -101,7 +98,18 @@ async def get_movie(movie_id: int):
 
 
 @router.post("/{movie_id}/rate")
-async def rate_movie(movie_id: int, rating: float = Query(..., ge=1, le=5)):
-    """Submit or update a movie rating (requires user_id in query)."""
-    # Simplified: pass user_id as query param for demo
-    return {"message": f"Rating {rating} for movie {movie_id} recorded / 评分已记录"}
+async def rate_movie(movie_id: int, user_id: int = Query(...), rating: float = Query(..., ge=1, le=5)):
+    """Submit or update a movie rating."""
+    conn = get_connection()
+    try:
+        conn.execute("""
+            INSERT INTO ratings (user_id, movie_id, rating, timestamp)
+            VALUES (?, ?, ?, datetime('now'))
+            ON CONFLICT(user_id, movie_id) DO UPDATE SET rating = excluded.rating, timestamp = datetime('now')
+        """, (user_id, movie_id, rating))
+        conn.commit()
+        return {"message": f"Rating {rating} saved for movie {movie_id}", "user_id": user_id}
+    except Exception as e:
+        raise HTTPException(500, "Failed to save rating")
+    finally:
+        conn.close()

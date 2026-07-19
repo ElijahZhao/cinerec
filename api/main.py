@@ -8,10 +8,13 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+
+async def get_optional_user(user_id: int = Query(None)):
+    return user_id
 
 app = FastAPI(
     title="CineRec — Multi-Modal Movie Recommendation System",
@@ -37,6 +40,10 @@ app.include_router(auth_router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(movies_router, prefix="/api/movies", tags=["Movies"])
 app.include_router(recommend_router, prefix="/api/recommend", tags=["Recommendations"])
 app.include_router(eval_router, prefix="/api/eval", tags=["Evaluation"])
+
+# One-time DB initialisations (idempotent)
+from db.database import init_db
+init_db()
 
 # Serve frontend static files
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "..", "frontend")

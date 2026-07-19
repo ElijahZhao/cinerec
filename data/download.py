@@ -14,6 +14,13 @@ def download_movielens_100k():
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
         print("Download complete.")
+
+        # Verify file integrity
+        expected_size = 4940235  # ml-100k zip is approximately 4.9MB
+        actual_size = os.path.getsize(zip_path)
+        if actual_size < expected_size * 0.9:
+            print(f"Warning: Downloaded file size {actual_size} bytes, expected ~{expected_size} bytes")
+            print("File may be corrupted. Please re-run this script.")
     if not os.path.exists(os.path.join(RAW_DIR, "ml-100k")):
         with zipfile.ZipFile(zip_path, "r") as z:
             z.extractall(RAW_DIR)

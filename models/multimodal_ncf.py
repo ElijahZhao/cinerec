@@ -231,8 +231,13 @@ class MultiModalNCF(Recommender):
                 train_l.append(1.0)
                 for _ in range(self.num_neg):
                     neg_i = np.random.randint(0, self.num_items)
-                    while neg_i in pos_set:
+                    attempts = 0
+                    max_attempts = 100
+                    while neg_i in pos_set and attempts < max_attempts:
                         neg_i = np.random.randint(0, self.num_items)
+                        attempts += 1
+                    if attempts >= max_attempts:
+                        neg_i = (i + 1) % self.num_items
                     train_u.append(u)
                     train_i.append(neg_i)
                     train_l.append(0.0)
