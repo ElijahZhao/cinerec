@@ -42,6 +42,7 @@ const CineRec = (() => {
     }
 
     function applyI18n() {
+        document.documentElement.lang = state.lang;
         document.querySelectorAll('[data-i18n]').forEach(el => {
             el.textContent = t(el.dataset.i18n);
         });
@@ -99,6 +100,7 @@ const CineRec = (() => {
     function setUser(userId, username) {
         state.userId = userId;
         state.username = username;
+        localStorage.setItem('cinerec-user', JSON.stringify({ userId, username }));
         const badge = document.getElementById('user-badge');
         const nameEl = document.getElementById('user-name');
         const loginLink = document.querySelector('.nav-login-link');
@@ -106,7 +108,6 @@ const CineRec = (() => {
         badge.style.display = '';
         nameEl.textContent = username;
         if (loginLink) loginLink.style.display = 'none';
-        navigateTo('recommend');
     }
 
     // API helper
@@ -124,6 +125,22 @@ const CineRec = (() => {
 
     // Init
     async function init() {
+        // Restore user session
+        const savedUser = localStorage.getItem('cinerec-user');
+        if (savedUser) {
+            try {
+                const { userId, username } = JSON.parse(savedUser);
+                setUser(userId, username);
+                const savedLang = localStorage.getItem('cinerec-lang');
+                if (savedLang) state.lang = savedLang;
+                applyTheme();
+                await loadI18n();
+                applyI18n();
+                navigateTo('recommend');
+                return;
+            } catch(e) {}
+        }
+
         // Restore saved lang
         const savedLang = localStorage.getItem('cinerec-lang');
         if (savedLang) state.lang = savedLang;

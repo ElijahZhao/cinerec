@@ -1,5 +1,5 @@
 import sqlite3, os, pandas as pd
-from database import DB_PATH
+from db.database import DB_PATH
 
 def init_db(ratings_csv=None, movies_csv=None):
     """Initialize database with tables and optionally import data."""

@@ -131,6 +131,30 @@
     background: rgba(184, 134, 11, 0.08);
 }
 
+[data-theme="light"] .nav-link:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .btn-outline:hover {
+    border-color: var(--accent);
+    background: rgba(184, 134, 11, 0.08);
+    color: var(--accent);
+}
+
+[data-theme="light"] .pagination button:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .movie-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .rec-card {
+    background: var(--bg-card);
+    border-color: var(--glass-border);
+}
+
 /* --- Global Reset --- */
 *,
 *::before,
@@ -1129,4 +1153,29 @@ input, select {
     .user-badge {
         display: none;
     }
+}
+
+/* --- Loading Spinner --- */
+.loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.loading-spinner::before {
+    content: '';
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 0.75rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

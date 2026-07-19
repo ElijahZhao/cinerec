@@ -19,7 +19,8 @@ async function loadRecommendations() {
         renderRecommendations(data.recommendations, algo);
         Animations.animateRecCards();
     } catch (err) {
-        recList.innerHTML = `<p>${CineRec.t('common.error')}</p>`;
+        const isAlgoError = err.message && err.message.includes('500');
+        recList.innerHTML = `<p>${isAlgoError ? CineRec.t('rec.algoError') : CineRec.t('common.error')}</p>`;
     }
 }
 

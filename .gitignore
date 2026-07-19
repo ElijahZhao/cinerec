@@ -1,17 +1,47 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.egg-info/
-data/raw/*.csv
-data/raw/*.zip
-data/processed/*.npy
-data/processed/*.pkl
-data/processed/*.json
-*.pt
-*.pth
-db/*.db
+*.egg
+
+# Environment
 .env
 .venv/
-node_modules/
-*.egg-info/
+venv/
+
+# Database
+*.db
+*.db.bak
+*.db-journal
+*.db-wal
+
+# Data
+data/raw/*.csv
+data/raw/*.zip
+data/raw/ml-100k/
+data/processed/*.npy
+data/processed/*.pkl
+data/processed/*.pt
+data/processed/*.json
+
+# Model weights
+*.pt
+*.pth
+
+# Build
 dist/
 build/
+
+# Node
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Screenshots (generated locally)
+screenshots/*.png

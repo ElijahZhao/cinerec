@@ -1,6 +1,15 @@
 /**
  * CineRec — Dashboard / Model Comparison Page Logic
  */
+let evalChartInstance = null;
+let ablationChartInstance = null;
+let dashboardResizeBound = false;
+
+function handleDashboardResize() {
+    if (evalChartInstance) evalChartInstance.resize();
+    if (ablationChartInstance) ablationChartInstance.resize();
+}
+
 async function loadDashboard() {
     try {
         const [results, ablation] = await Promise.all([
@@ -10,6 +19,11 @@ async function loadDashboard() {
         renderEvalTable(results);
         renderEvalChart(results);
         renderAblationChart(ablation);
+
+        if (!dashboardResizeBound) {
+            window.addEventListener('resize', handleDashboardResize);
+            dashboardResizeBound = true;
+        }
     } catch (err) {
         console.error('Failed to load dashboard data:', err);
     }
@@ -50,18 +64,26 @@ function renderEvalTable(results) {
 
 function renderEvalChart(results) {
     if (typeof echarts === 'undefined') return;
-    const chart = echarts.init(document.getElementById('eval-chart'), 'dark');
+
+    if (evalChartInstance) { evalChartInstance.dispose(); evalChartInstance = null; }
+
+    const chartTheme = CineRec.state.theme === 'light' ? null : 'dark';
+    const axisLabelColor = CineRec.state.theme === 'light' ? '#6b7280' : '#8888a0';
+    const splitLineColor = CineRec.state.theme === 'light' ? '#e5e7eb' : 'rgba(255,255,255,0.06)';
+    const tooltipBg = CineRec.state.theme === 'light' ? '#fff' : '#1a1a2e';
+    const tooltipColor = CineRec.state.theme === 'light' ? '#1a1a2e' : '#e8e8ed';
+
+    evalChartInstance = echarts.init(document.getElementById('eval-chart'), chartTheme);
 
     const models = ['UserCF', 'ItemCF', 'SVD', 'NeuMF', 'MultiModalNCF'];
-    const colors = ['#4a9eff', '#4ade80', '#d4a843', '#a78bfa', '#f87171'];
 
-    chart.setOption({
+    evalChartInstance.setOption({
         backgroundColor: 'transparent',
-        tooltip: { trigger: 'axis', backgroundColor: 'rgba(20,20,35,0.9)', borderColor: '#d4a843' },
-        legend: { data: [CineRec.t('dash.hr'), CineRec.t('dash.ndcg'), CineRec.t('dash.recall')], textStyle: { color: '#8888a0' }, top: 5 },
+        tooltip: { trigger: 'axis', backgroundColor: tooltipBg, borderColor: '#d4a843', textStyle: { color: tooltipColor } },
+        legend: { data: [CineRec.t('dash.hr'), CineRec.t('dash.ndcg'), CineRec.t('dash.recall')], textStyle: { color: axisLabelColor }, top: 5 },
         grid: { left: '3%', right: '4%', bottom: '3%', top: '15%', containLabel: true },
-        xAxis: { type: 'category', data: models, axisLabel: { color: '#8888a0' }, axisLine: { lineStyle: { color: '#333' } } },
-        yAxis: { type: 'value', axisLabel: { color: '#8888a0', formatter: v => v.toFixed(2) }, splitLine: { lineStyle: { color: '#222' } } },
+        xAxis: { type: 'category', data: models, axisLabel: { color: axisLabelColor }, axisLine: { lineStyle: { color: splitLineColor } } },
+        yAxis: { type: 'value', axisLabel: { color: axisLabelColor, formatter: v => v.toFixed(2) }, splitLine: { lineStyle: { color: splitLineColor } } },
         series: [
             {
                 name: CineRec.t('dash.hr'), type: 'bar', barGap: '10%',
@@ -83,25 +105,32 @@ function renderEvalChart(results) {
             }
         ]
     });
-
-    window.addEventListener('resize', () => chart.resize());
 }
 
 function renderAblationChart(ablation) {
     if (typeof echarts === 'undefined') return;
-    const chart = echarts.init(document.getElementById('ablation-chart'), 'dark');
+
+    if (ablationChartInstance) { ablationChartInstance.dispose(); ablationChartInstance = null; }
+
+    const chartTheme = CineRec.state.theme === 'light' ? null : 'dark';
+    const axisLabelColor = CineRec.state.theme === 'light' ? '#6b7280' : '#8888a0';
+    const splitLineColor = CineRec.state.theme === 'light' ? '#e5e7eb' : 'rgba(255,255,255,0.06)';
+    const tooltipBg = CineRec.state.theme === 'light' ? '#fff' : '#1a1a2e';
+    const tooltipColor = CineRec.state.theme === 'light' ? '#1a1a2e' : '#e8e8ed';
+
+    ablationChartInstance = echarts.init(document.getElementById('ablation-chart'), chartTheme);
 
     const variants = Object.keys(ablation).filter(k => !k.startsWith('_'));
     const hrData = variants.map(v => ablation[v]?.['HR@10'] || 0);
     const ndcgData = variants.map(v => ablation[v]?.['NDCG@10'] || 0);
 
-    chart.setOption({
+    ablationChartInstance.setOption({
         backgroundColor: 'transparent',
-        tooltip: { trigger: 'axis', backgroundColor: 'rgba(20,20,35,0.9)', borderColor: '#d4a843' },
-        legend: { data: [CineRec.t('dash.hr'), CineRec.t('dash.ndcg')], textStyle: { color: '#8888a0' }, top: 5 },
+        tooltip: { trigger: 'axis', backgroundColor: tooltipBg, borderColor: '#d4a843', textStyle: { color: tooltipColor } },
+        legend: { data: [CineRec.t('dash.hr'), CineRec.t('dash.ndcg')], textStyle: { color: axisLabelColor }, top: 5 },
         grid: { left: '3%', right: '4%', bottom: '3%', top: '15%', containLabel: true },
-        xAxis: { type: 'category', data: variants, axisLabel: { color: '#8888a0', rotate: 15 }, axisLine: { lineStyle: { color: '#333' } } },
-        yAxis: { type: 'value', min: 0.2, axisLabel: { color: '#8888a0', formatter: v => v.toFixed(2) }, splitLine: { lineStyle: { color: '#222' } } },
+        xAxis: { type: 'category', data: variants, axisLabel: { color: axisLabelColor, rotate: 15 }, axisLine: { lineStyle: { color: splitLineColor } } },
+        yAxis: { type: 'value', min: 0.2, axisLabel: { color: axisLabelColor, formatter: v => v.toFixed(2) }, splitLine: { lineStyle: { color: splitLineColor } } },
         series: [
             {
                 name: CineRec.t('dash.hr'), type: 'bar',
@@ -117,6 +146,4 @@ function renderAblationChart(ablation) {
             }
         ]
     });
-
-    window.addEventListener('resize', () => chart.resize());
 }

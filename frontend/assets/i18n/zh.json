@@ -44,7 +44,8 @@
         "algoItemCFDesc": "基于物品的协同过滤",
         "algoSVDDesc": "奇异值分解",
         "algoNeuMFDesc": "神经协同过滤",
-        "algoMultiModalDesc": "多模态神经网络"
+        "algoMultiModalDesc": "多模态神经网络",
+        "algoError": "该算法暂时不可用，请尝试其他算法"
     },
     "dash": {
         "title": "模型对比",

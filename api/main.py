@@ -3,7 +3,12 @@ CineRec FastAPI Application — Main entry point.
 Serves the REST API and static frontend files.
 """
 import os
-from fastapi import FastAPI
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -16,7 +21,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:8000", "http://localhost:3000", "http://127.0.0.1:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -40,11 +45,13 @@ FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "..", "frontend")
 async def serve_index():
     return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
-@app.get("/{path:path}")
+@app.get("/static/{path:path}")
 async def serve_static(path: str):
     """Serve frontend static files (CSS, JS, assets)."""
-    file_path = os.path.join(FRONTEND_DIR, path)
-    if os.path.isfile(file_path):
-        return FileResponse(file_path)
-    # Fallback to index.html for SPA routing
-    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+    file_path = os.path.normpath(os.path.join(FRONTEND_DIR, path))
+    # 防止路径遍历
+    if not file_path.startswith(os.path.normpath(FRONTEND_DIR)):
+        raise HTTPException(status_code=403, detail="Forbidden")
+    if not os.path.isfile(file_path):
+        raise HTTPException(status_code=404, detail="Not Found")
+    return FileResponse(file_path)

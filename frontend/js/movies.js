@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Star rating interaction
     const stars = document.querySelectorAll('.star-rating .star');
+    let currentRating = 0;
     stars.forEach(star => {
         star.addEventListener('mouseenter', () => {
             const val = parseInt(star.dataset.value);
@@ -91,8 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         star.addEventListener('click', () => {
             const val = parseInt(star.dataset.value);
+            currentRating = val;
             stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= val));
         });
+    });
+    document.querySelector('.star-rating').addEventListener('mouseleave', () => {
+        stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= currentRating));
     });
 
     // Submit rating

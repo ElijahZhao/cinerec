@@ -1,9 +1,12 @@
 """Recommendation endpoints with real model inference."""
-import os, sys, pickle, json
+import os, sys, pickle, json, logging
 import numpy as np
 from fastapi import APIRouter, Query, HTTPException
 from fastapi.responses import JSONResponse
 from db.database import get_connection
+
+# Add project root to sys.path once
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 router = APIRouter()
 
@@ -18,9 +21,7 @@ def _load_model(name):
     """Load a model from disk."""
     if name in _models_cache:
         return _models_cache[name]
-    
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-    
+
     if name == "UserCF":
         from models.user_cf import UserCF
         path = os.path.join(PROCESSED_DIR, "model_usercf.pkl")
@@ -106,6 +107,7 @@ async def get_recommendations(
         try:
             recs = model.recommend(user_id, top_k=top_k, exclude_items=exclude)
         except Exception:
+            logging.exception("Model inference failed")
             recs = []
         
         recommendations = []
@@ -179,4 +181,5 @@ async def explain_recommendation(
         result = explainer.explain(user_id, movie_id)
         return result
     except Exception as e:
-        raise HTTPException(500, str(e))
+        logging.exception("Explain recommendation failed")
+        raise HTTPException(500, "Internal server error")

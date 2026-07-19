@@ -242,7 +242,7 @@ class NeuMF(Recommender):
 
     def load(self, path):
         """Load model weights."""
-        checkpoint = torch.load(path, map_location=self.device)
+        checkpoint = torch.load(path, map_location=self.device, weights_only=False)
         self.num_users = checkpoint['num_users']
         self.num_items = checkpoint['num_items']
         self.net = NeuMFNet(

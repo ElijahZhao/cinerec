@@ -103,6 +103,5 @@ async def get_movie(movie_id: int):
 @router.post("/{movie_id}/rate")
 async def rate_movie(movie_id: int, rating: float = Query(..., ge=1, le=5)):
     """Submit or update a movie rating (requires user_id in query)."""
-    from fastapi import Request
     # Simplified: pass user_id as query param for demo
     return {"message": f"Rating {rating} for movie {movie_id} recorded / 评分已记录"}

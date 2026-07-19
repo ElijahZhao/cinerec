@@ -44,7 +44,8 @@
         "algoItemCFDesc": "Item-based Collaborative Filtering",
         "algoSVDDesc": "Singular Value Decomposition",
         "algoNeuMFDesc": "Neural Collaborative Filtering",
-        "algoMultiModalDesc": "Multi-Modal Neural CF"
+        "algoMultiModalDesc": "Multi-Modal Neural CF",
+        "algoError": "This algorithm is currently unavailable. Try another one."
     },
     "dash": {
         "title": "Model Comparison",
