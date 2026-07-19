@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineRec — Multi-Modal Movie Recommendation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particles-bg"></div>
+    <div id="film-grain"></div>
+
+    <!-- Navigation -->
+    <nav id="main-nav">
+        <div class="nav-brand">
+            <span class="logo-icon">&#9734;</span>
+            <span class="logo-text">CineRec</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active" data-page="login" data-i18n="nav.login">Login</a>
+            <a href="#" class="nav-link" data-page="movies" data-i18n="nav.movies">Movies</a>
+            <a href="#" class="nav-link" data-page="recommend" data-i18n="nav.recommend">Recommend</a>
+            <a href="#" class="nav-link" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</a>
+        </div>
+        <div class="nav-actions">
+            <button id="lang-toggle" class="btn-glass" title="Switch Language">
+                <span id="lang-label">EN</span>
+            </button>
+            <div id="user-badge" class="user-badge hidden">
+                <span id="user-name">Guest</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page: Login -->
+    <section id="page-login" class="page active">
+        <div class="login-container">
+            <div class="login-hero">
+                <h1 class="hero-title">
+                    <span class="title-line" data-split>CineRec</span>
+                    <span class="subtitle-line" data-decrypt>Your AI Movie Guide</span>
+                </h1>
+                <p class="hero-desc" data-i18n="login.desc">Experience 5 recommendation algorithms from classic to cutting-edge, with explainable AI insights.</p>
+            </div>
+            <div class="login-card glass-card">
+                <div class="login-tabs">
+                    <button class="tab-btn active" data-tab="signin" data-i18n="login.signin">Sign In</button>
+                    <button class="tab-btn" data-tab="signup" data-i18n="login.signup">Sign Up</button>
+                </div>
+                <form id="form-signin" class="login-form active">
+                    <div class="input-group">
+                        <input type="text" id="login-username" placeholder="Username" required>
+                        <span class="input-line"></span>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-password" placeholder="Password" required>
+                        <span class="input-line"></span>
+                    </div>
+                    <button type="submit" class="btn-primary magnetic-btn" data-i18n="login.submit">Sign In</button>
+                    <button type="button" id="btn-guest" class="btn-outline" data-i18n="login.guest">Try as Guest</button>
+                </form>
+                <form id="form-signup" class="login-form">
+                    <div class="input-group">
+                        <input type="text" id="reg-username" placeholder="Choose Username" required>
+                        <span class="input-line"></span>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-password" placeholder="Choose Password" required>
+                        <span class="input-line"></span>
+                    </div>
+                    <button type="submit" class="btn-primary magnetic-btn" data-i18n="login.register">Create Account</button>
+                </form>
+            </div>
+            <div class="algo-preview">
+                <div class="algo-step" data-delay="0"><span class="algo-dot"></span><span>UserCF</span></div>
+                <div class="algo-line"></div>
+                <div class="algo-step" data-delay="200"><span class="algo-dot"></span><span>ItemCF</span></div>
+                <div class="algo-line"></div>
+                <div class="algo-step" data-delay="400"><span class="algo-dot"></span><span>SVD</span></div>
+                <div class="algo-line"></div>
+                <div class="algo-step" data-delay="600"><span class="algo-dot"></span><span>NeuMF</span></div>
+                <div class="algo-line"></div>
+                <div class="algo-step highlight" data-delay="800"><span class="algo-dot glow"></span><span>Multi-Modal</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page: Movies -->
+    <section id="page-movies" class="page">
+        <div class="page-container">
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="movies.title">Movie Library</h1>
+                <div class="search-bar glass-card">
+                    <input type="text" id="movie-search" placeholder="Search movies..." data-i18n-placeholder="movies.search">
+                    <select id="genre-filter">
+                        <option value="" data-i18n="movies.allGenres">All Genres</option>
+                    </select>
+                    <select id="sort-select">
+                        <option value="id" data-i18n="movies.sortId">By ID</option>
+                        <option value="title" data-i18n="movies.sortTitle">By Title</option>
+                        <option value="year" data-i18n="movies.sortYear">By Year</option>
+                    </select>
+                </div>
+            </div>
+            <div id="movies-grid" class="movies-grid">
+                <!-- Movie cards populated by JS -->
+            </div>
+            <div id="movies-pagination" class="pagination"></div>
+        </div>
+    </section>
+
+    <!-- Page: Recommend -->
+    <section id="page-recommend" class="page">
+        <div class="page-container">
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="rec.title">For You</h1>
+                <div class="algo-switcher">
+                    <button class="algo-chip" data-algo="UserCF">UserCF</button>
+                    <button class="algo-chip" data-algo="ItemCF">ItemCF</button>
+                    <button class="algo-chip" data-algo="SVD">SVD</button>
+                    <button class="algo-chip" data-algo="NeuMF">NeuMF</button>
+                    <button class="algo-chip active" data-algo="MultiModalNCF">Multi-Modal</button>
+                </div>
+                <button id="btn-refresh-rec" class="btn-outline magnetic-btn" data-i18n="rec.refresh">Refresh</button>
+            </div>
+            <div id="rec-list" class="rec-grid">
+                <!-- Recommendation cards populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Page: Dashboard -->
+    <section id="page-dashboard" class="page">
+        <div class="page-container">
+            <div class="page-header">
+                <h1 class="page-title" data-i18n="dash.title">Model Comparison</h1>
+            </div>
+            <div class="dash-grid">
+                <div class="glass-card dash-panel">
+                    <h2 data-i18n="dash.results">Evaluation Results</h2>
+                    <div id="eval-table" class="eval-table"></div>
+                </div>
+                <div class="glass-card dash-panel">
+                    <h2 data-i18n="dash.chart">Performance Chart</h2>
+                    <div id="eval-chart" style="height:350px;"></div>
+                </div>
+                <div class="glass-card dash-panel full-width">
+                    <h2 data-i18n="dash.ablation">Ablation Study</h2>
+                    <div id="ablation-chart" style="height:300px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rating Modal -->
+    <div id="rating-modal" class="modal hidden">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3 id="rating-movie-title"></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="star-rating">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <button id="btn-submit-rating" class="btn-primary magnetic-btn" data-i18n="movies.rate">Rate</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.7.0/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/effects.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/movies.js"></script>
+    <script src="js/recommend.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

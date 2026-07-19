@@ -1,0 +1,135 @@
+/* ============================================================
+   CineRec — CSS-only Animations
+   ============================================================ */
+
+/* 3D Tilt card hover effect */
+.tilt-card {
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+}
+.tilt-card:hover {
+    transform: perspective(800px) rotateY(5deg) rotateX(5deg);
+}
+
+/* Glow border animation */
+.glow-border {
+    position: relative;
+}
+.glow-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(45deg, var(--accent), var(--blue), var(--purple), var(--accent));
+    background-size: 300% 300%;
+    animation: glowRotate 4s ease infinite;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.glow-border:hover::before {
+    opacity: 1;
+}
+
+@keyframes glowRotate {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Magnetic button hover */
+.magnetic-btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.magnetic-btn:hover {
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* Spotlight card effect */
+.spotlight-card {
+    position: relative;
+    overflow: hidden;
+}
+.spotlight-card::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+.spotlight-card:hover::after {
+    opacity: 1;
+}
+
+/* Film grain overlay */
+#film-grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+}
+
+/* Scroll reveal */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Loading skeleton */
+.skeleton {
+    background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-card) 50%, var(--bg-secondary) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+@keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Star rating */
+.star-rating .star {
+    font-size: 2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+.star-rating .star:hover,
+.star-rating .star.active {
+    color: var(--accent);
+    transform: scale(1.2);
+}
+
+/* Fade transitions */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Algo dots pulse */
+.algo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    display: inline-block;
+}
+.algo-dot.glow {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 8px var(--accent-glow); }
+    50% { box-shadow: 0 0 20px var(--accent-glow); }
+}

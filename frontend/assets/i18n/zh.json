@@ -1,0 +1,8 @@
+{
+    "nav": {"login": "登录", "movies": "电影", "recommend": "推荐", "dashboard": "对比"},
+    "login": {"title": "CineRec", "subtitle": "你的 AI 电影指南", "desc": "体验从经典到前沿的 5 种推荐算法，拥有可解释的 AI 洞察。", "signin": "登录", "signup": "注册", "submit": "登录", "guest": "游客体验", "register": "创建账号", "username": "用户名", "password": "密码"},
+    "movies": {"title": "电影库", "search": "搜索电影...", "allGenres": "全部类型", "sortId": "按 ID", "sortTitle": "按名称", "sortYear": "按年份", "rate": "评分", "avgRating": "平均评分", "ratings": "条评分", "noResults": "未找到电影。"},
+    "rec": {"title": "为你推荐", "refresh": "换一批", "score": "分数", "reasons": "为什么推荐？", "collaborative": "协同过滤", "content": "基于内容", "noRec": "暂无推荐。"},
+    "dash": {"title": "模型对比", "results": "评测结果", "chart": "性能图表", "ablation": "消融实验", "model": "模型", "hr": "HR@10", "ndcg": "NDCG@10", "recall": "Recall@10", "time": "时间(s)"},
+    "common": {"loading": "加载中...", "error": "错误", "retry": "重试", "back": "返回"}
+}

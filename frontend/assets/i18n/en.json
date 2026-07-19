@@ -1,0 +1,8 @@
+{
+    "nav": {"login": "Login", "movies": "Movies", "recommend": "Recommend", "dashboard": "Dashboard"},
+    "login": {"title": "CineRec", "subtitle": "Your AI Movie Guide", "desc": "Experience 5 recommendation algorithms from classic to cutting-edge, with explainable AI insights.", "signin": "Sign In", "signup": "Sign Up", "submit": "Sign In", "guest": "Try as Guest", "register": "Create Account", "username": "Username", "password": "Password"},
+    "movies": {"title": "Movie Library", "search": "Search movies...", "allGenres": "All Genres", "sortId": "By ID", "sortTitle": "By Title", "sortYear": "By Year", "rate": "Rate", "avgRating": "Avg Rating", "ratings": "ratings", "noResults": "No movies found."},
+    "rec": {"title": "For You", "refresh": "Refresh", "score": "Score", "reasons": "Why this?", "collaborative": "Collaborative", "content": "Content-based", "noRec": "No recommendations available."},
+    "dash": {"title": "Model Comparison", "results": "Evaluation Results", "chart": "Performance Chart", "ablation": "Ablation Study", "model": "Model", "hr": "HR@10", "ndcg": "NDCG@10", "recall": "Recall@10", "time": "Time(s)"},
+    "common": {"loading": "Loading...", "error": "Error", "retry": "Retry", "back": "Back"}
+}
