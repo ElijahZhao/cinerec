@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.egg-info/
+data/raw/*.csv
+data/raw/*.zip
+data/processed/*.npy
+data/processed/*.pkl
+data/processed/*.json
+*.pt
+*.pth
+db/*.db
+.env
+.venv/
+node_modules/
+*.egg-info/
+dist/
+build/
