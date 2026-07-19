@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             CineRec.setUser(data.user_id, data.username);
         } catch (err) {
-            alert('Login failed / 登录失败');
+            alert(CineRec.t('login.loginFailed'));
         }
     });
 
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             CineRec.setUser(data.user_id, data.username);
         } catch (err) {
-            alert('Registration failed / 注册失败');
+            alert(CineRec.t('login.registerFailed'));
         }
     });
 
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await CineRec.api('/api/auth/guest');
             CineRec.setUser(data.user_id, data.username);
         } catch (err) {
-            alert('Guest login failed / 游客登录失败');
+            alert(CineRec.t('login.guestFailed'));
         }
     });
 });

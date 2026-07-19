@@ -6,8 +6,8 @@
     <title>CineRec — Multi-Modal Movie Recommendation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/style.css?v=4">
+    <link rel="stylesheet" href="css/animations.css?v=4">
 </head>
 <body>
     <!-- Particle Background -->
@@ -21,15 +21,18 @@
             <span class="logo-text">CineRec</span>
         </div>
         <div class="nav-links">
-            <a href="#" class="nav-link active" data-page="login" data-i18n="nav.login">Login</a>
-            <a href="#" class="nav-link" data-page="movies" data-i18n="nav.movies">Movies</a>
+            <a href="#" class="nav-link active" data-page="movies" data-i18n="nav.movies">Movies</a>
             <a href="#" class="nav-link" data-page="recommend" data-i18n="nav.recommend">Recommend</a>
             <a href="#" class="nav-link" data-page="dashboard" data-i18n="nav.dashboard">Dashboard</a>
         </div>
         <div class="nav-actions">
+            <button id="theme-toggle" class="btn-glass" title="Toggle Theme">
+                <span id="theme-icon">&#9788;</span>
+            </button>
             <button id="lang-toggle" class="btn-glass" title="Switch Language">
                 <span id="lang-label">EN</span>
             </button>
+            <a href="#" class="nav-link nav-login-link" data-page="login" data-i18n="nav.login">Login</a>
             <div id="user-badge" class="user-badge hidden">
                 <span id="user-name">Guest</span>
             </div>
@@ -42,7 +45,7 @@
             <div class="login-hero">
                 <h1 class="hero-title">
                     <span class="title-line" data-split>CineRec</span>
-                    <span class="subtitle-line" data-decrypt>Your AI Movie Guide</span>
+                    <span class="subtitle-line" data-decrypt data-i18n="login.subtitle">Your AI Movie Guide</span>
                 </h1>
                 <p class="hero-desc" data-i18n="login.desc">Experience 5 recommendation algorithms from classic to cutting-edge, with explainable AI insights.</p>
             </div>
@@ -53,11 +56,11 @@
                 </div>
                 <form id="form-signin" class="login-form active">
                     <div class="input-group">
-                        <input type="text" id="login-username" placeholder="Username" required>
+                        <input type="text" id="login-username" placeholder="Username" data-i18n-placeholder="login.username" required>
                         <span class="input-line"></span>
                     </div>
                     <div class="input-group">
-                        <input type="password" id="login-password" placeholder="Password" required>
+                        <input type="password" id="login-password" placeholder="Password" data-i18n-placeholder="login.password" required>
                         <span class="input-line"></span>
                     </div>
                     <button type="submit" class="btn-primary magnetic-btn" data-i18n="login.submit">Sign In</button>
@@ -65,11 +68,11 @@
                 </form>
                 <form id="form-signup" class="login-form">
                     <div class="input-group">
-                        <input type="text" id="reg-username" placeholder="Choose Username" required>
+                        <input type="text" id="reg-username" placeholder="Choose Username" data-i18n-placeholder="login.username" required>
                         <span class="input-line"></span>
                     </div>
                     <div class="input-group">
-                        <input type="password" id="reg-password" placeholder="Choose Password" required>
+                        <input type="password" id="reg-password" placeholder="Choose Password" data-i18n-placeholder="login.password" required>
                         <span class="input-line"></span>
                     </div>
                     <button type="submit" class="btn-primary magnetic-btn" data-i18n="login.register">Create Account</button>
@@ -180,13 +183,13 @@
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.7.0/tsparticles.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/animations.js"></script>
-    <script src="js/particles.js"></script>
-    <script src="js/effects.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/movies.js"></script>
-    <script src="js/recommend.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script src="js/app.js?v=4"></script>
+    <script src="js/animations.js?v=4"></script>
+    <script src="js/particles.js?v=4"></script>
+    <script src="js/effects.js?v=4"></script>
+    <script src="js/auth.js?v=4"></script>
+    <script src="js/movies.js?v=4"></script>
+    <script src="js/recommend.js?v=4"></script>
+    <script src="js/dashboard.js?v=4"></script>
 </body>
 </html>

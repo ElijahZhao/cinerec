@@ -23,7 +23,7 @@ function renderEvalTable(results) {
     let html = `<table class="data-table">
         <thead><tr>
             <th>${CineRec.t('dash.model')}</th>
-            <th>HR@10</th><th>NDCG@10</th><th>Recall@10</th>
+            <th>${CineRec.t('dash.hr')}</th><th>${CineRec.t('dash.ndcg')}</th><th>${CineRec.t('dash.recall')}</th>
             <th>${CineRec.t('dash.time')}</th>
         </tr></thead><tbody>`;
 
@@ -58,25 +58,25 @@ function renderEvalChart(results) {
     chart.setOption({
         backgroundColor: 'transparent',
         tooltip: { trigger: 'axis', backgroundColor: 'rgba(20,20,35,0.9)', borderColor: '#d4a843' },
-        legend: { data: ['HR@10', 'NDCG@10', 'Recall@10'], textStyle: { color: '#8888a0' }, top: 5 },
+        legend: { data: [CineRec.t('dash.hr'), CineRec.t('dash.ndcg'), CineRec.t('dash.recall')], textStyle: { color: '#8888a0' }, top: 5 },
         grid: { left: '3%', right: '4%', bottom: '3%', top: '15%', containLabel: true },
         xAxis: { type: 'category', data: models, axisLabel: { color: '#8888a0' }, axisLine: { lineStyle: { color: '#333' } } },
         yAxis: { type: 'value', axisLabel: { color: '#8888a0', formatter: v => v.toFixed(2) }, splitLine: { lineStyle: { color: '#222' } } },
         series: [
             {
-                name: 'HR@10', type: 'bar', barGap: '10%',
+                name: CineRec.t('dash.hr'), type: 'bar', barGap: '10%',
                 data: models.map(m => results[m]?.['HR@10'] || 0),
                 itemStyle: { color: '#d4a843', borderRadius: [4, 4, 0, 0] },
                 animationDuration: 1500, animationEasing: 'cubicOut'
             },
             {
-                name: 'NDCG@10', type: 'bar',
+                name: CineRec.t('dash.ndcg'), type: 'bar',
                 data: models.map(m => results[m]?.['NDCG@10'] || 0),
                 itemStyle: { color: '#22d3ee', borderRadius: [4, 4, 0, 0] },
                 animationDuration: 1500, animationDelay: 200, animationEasing: 'cubicOut'
             },
             {
-                name: 'Recall@10', type: 'bar',
+                name: CineRec.t('dash.recall'), type: 'bar',
                 data: models.map(m => results[m]?.['Recall@10'] || 0),
                 itemStyle: { color: '#4ade80', borderRadius: [4, 4, 0, 0] },
                 animationDuration: 1500, animationDelay: 400, animationEasing: 'cubicOut'
@@ -98,19 +98,19 @@ function renderAblationChart(ablation) {
     chart.setOption({
         backgroundColor: 'transparent',
         tooltip: { trigger: 'axis', backgroundColor: 'rgba(20,20,35,0.9)', borderColor: '#d4a843' },
-        legend: { data: ['HR@10', 'NDCG@10'], textStyle: { color: '#8888a0' }, top: 5 },
+        legend: { data: [CineRec.t('dash.hr'), CineRec.t('dash.ndcg')], textStyle: { color: '#8888a0' }, top: 5 },
         grid: { left: '3%', right: '4%', bottom: '3%', top: '15%', containLabel: true },
         xAxis: { type: 'category', data: variants, axisLabel: { color: '#8888a0', rotate: 15 }, axisLine: { lineStyle: { color: '#333' } } },
         yAxis: { type: 'value', min: 0.2, axisLabel: { color: '#8888a0', formatter: v => v.toFixed(2) }, splitLine: { lineStyle: { color: '#222' } } },
         series: [
             {
-                name: 'HR@10', type: 'bar',
+                name: CineRec.t('dash.hr'), type: 'bar',
                 data: hrData,
                 itemStyle: { color: '#d4a843', borderRadius: [4, 4, 0, 0] },
                 animationDuration: 1500, animationEasing: 'cubicOut'
             },
             {
-                name: 'NDCG@10', type: 'bar',
+                name: CineRec.t('dash.ndcg'), type: 'bar',
                 data: ndcgData,
                 itemStyle: { color: '#a78bfa', borderRadius: [4, 4, 0, 0] },
                 animationDuration: 1500, animationDelay: 200, animationEasing: 'cubicOut'

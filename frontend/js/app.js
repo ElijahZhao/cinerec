@@ -1,5 +1,5 @@
 /**
- * CineRec — SPA Router, State Management, and i18n
+ * CineRec — SPA Router, State Management, i18n, and Theme
  */
 const CineRec = (() => {
     // State
@@ -7,11 +7,12 @@ const CineRec = (() => {
         currentPage: 'login',
         userId: null,
         username: null,
-        lang: 'en',
+        lang: 'zh',
+        theme: localStorage.getItem('cinerec-theme') || 'dark',
         apiBase: window.location.origin,
         movies: [],
         recommendations: [],
-        currentAlgo: 'MultiModalNCF',
+        currentAlgo: 'SVD',
         moviePage: 1,
     };
 
@@ -53,6 +54,20 @@ const CineRec = (() => {
     function toggleLang() {
         state.lang = state.lang === 'en' ? 'zh' : 'en';
         applyI18n();
+        localStorage.setItem('cinerec-lang', state.lang);
+    }
+
+    // Theme
+    function applyTheme() {
+        document.documentElement.setAttribute('data-theme', state.theme);
+        const icon = document.getElementById('theme-icon');
+        if (icon) icon.innerHTML = state.theme === 'light' ? '&#9789;' : '&#9788;';
+    }
+
+    function toggleTheme() {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        applyTheme();
+        localStorage.setItem('cinerec-theme', state.theme);
     }
 
     // Navigation
@@ -64,6 +79,12 @@ const CineRec = (() => {
         const linkEl = document.querySelector(`.nav-link[data-page="${page}"]`);
         if (pageEl) pageEl.classList.add('active');
         if (linkEl) linkEl.classList.add('active');
+
+        // Hide login link in nav when on login page, show when not
+        const loginLink = document.querySelector('.nav-login-link');
+        const userBadge = document.getElementById('user-badge');
+        if (loginLink) loginLink.style.display = (page === 'login' || state.userId) ? 'none' : '';
+        if (userBadge && state.userId) userBadge.style.display = '';
 
         // Trigger page-specific animations
         if (page === 'recommend') loadRecommendations();
@@ -80,8 +101,11 @@ const CineRec = (() => {
         state.username = username;
         const badge = document.getElementById('user-badge');
         const nameEl = document.getElementById('user-name');
+        const loginLink = document.querySelector('.nav-login-link');
         badge.classList.remove('hidden');
+        badge.style.display = '';
         nameEl.textContent = username;
+        if (loginLink) loginLink.style.display = 'none';
         navigateTo('recommend');
     }
 
@@ -100,10 +124,15 @@ const CineRec = (() => {
 
     // Init
     async function init() {
+        // Restore saved lang
+        const savedLang = localStorage.getItem('cinerec-lang');
+        if (savedLang) state.lang = savedLang;
+
+        applyTheme();
         await loadI18n();
         applyI18n();
 
-        // Nav clicks
+        // Nav clicks (including login link in nav-actions)
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -113,6 +142,9 @@ const CineRec = (() => {
 
         // Lang toggle
         document.getElementById('lang-toggle').addEventListener('click', toggleLang);
+
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
         // Load genre filter
         try {
